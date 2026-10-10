@@ -1,0 +1,327 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>IP 趋势雷达</title>
+<style>
+:root {
+  color-scheme: light;
+  --bg: #f6f6f4;
+  --surface: #fcfcfb;
+  --border: #e4e3df;
+  --grid: #ecebe7;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --text-muted: #7a7974;
+  --series-1: #2a78d6;
+  --series-1-soft: rgba(42, 120, 214, .12);
+  --up: #0f7a3d;
+  --down: #b42318;
+  --row-hover: #f0efec;
+  --row-active: #e6eefa;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #121211;
+    --surface: #1a1a19;
+    --border: #2e2e2c;
+    --grid: #262624;
+    --text-primary: #f0efec;
+    --text-secondary: #c3c2b7;
+    --text-muted: #8f8e86;
+    --series-1: #3987e5;
+    --series-1-soft: rgba(57, 135, 229, .18);
+    --up: #4cc27a;
+    --down: #f07a6e;
+    --row-hover: #222220;
+    --row-active: #1e2b3d;
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #121211;
+  --surface: #1a1a19;
+  --border: #2e2e2c;
+  --grid: #262624;
+  --text-primary: #f0efec;
+  --text-secondary: #c3c2b7;
+  --text-muted: #8f8e86;
+  --series-1: #3987e5;
+  --series-1-soft: rgba(57, 135, 229, .18);
+  --up: #4cc27a;
+  --down: #f07a6e;
+  --row-hover: #222220;
+  --row-active: #1e2b3d;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--text-primary);
+  font: 14px/1.5 -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Segoe UI", sans-serif;
+}
+header { padding: 24px 24px 8px; max-width: 1280px; margin: 0 auto; }
+h1 { font-size: 22px; margin: 0 0 4px; font-weight: 650; }
+.sub { color: var(--text-secondary); margin: 0; }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 24px; max-width: 1280px; margin: 0 auto; }
+.filters input, .filters select {
+  font: inherit; color: var(--text-primary); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 8px; padding: 6px 10px; min-height: 34px;
+}
+.filters input { flex: 1 1 200px; max-width: 320px; }
+.count { align-self: center; color: var(--text-muted); margin-left: auto; }
+main { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 16px; padding: 0 24px 32px; max-width: 1280px; margin: 0 auto; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-weight: 500; color: var(--text-muted); font-size: 12px; padding: 10px 8px; border-bottom: 1px solid var(--border); white-space: nowrap; cursor: pointer; user-select: none; }
+th.num, td.num { text-align: right; }
+th[aria-sort="descending"]::after { content: " ↓"; }
+th[aria-sort="ascending"]::after { content: " ↑"; }
+td { padding: 9px 8px; border-bottom: 1px solid var(--grid); white-space: nowrap; vertical-align: middle; }
+tbody tr { cursor: pointer; }
+tbody tr:hover { background: var(--row-hover); }
+tbody tr.active { background: var(--row-active); }
+tbody tr:focus-visible { outline: 2px solid var(--series-1); outline-offset: -2px; }
+.rank { color: var(--text-muted); font-variant-numeric: tabular-nums; width: 32px; }
+.name { font-weight: 550; }
+.name small { display: block; font-weight: 400; color: var(--text-muted); font-size: 12px; }
+.meter { display: inline-flex; align-items: center; gap: 8px; font-variant-numeric: tabular-nums; }
+.meter i { display: inline-block; width: 56px; height: 6px; border-radius: 3px; background: var(--grid); position: relative; overflow: hidden; }
+.meter i b { position: absolute; inset: 0 auto 0 0; background: var(--series-1); border-radius: 3px; }
+.chg { font-variant-numeric: tabular-nums; }
+.chg.up { color: var(--up); } .chg.down { color: var(--down); }
+.stage { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--text-secondary); }
+.stage.breakout, .stage.emerging { border-color: var(--up); color: var(--up); }
+.stage.declining { border-color: var(--down); color: var(--down); }
+.srcs { color: var(--text-secondary); font-size: 12px; }
+svg.spark { display: block; }
+.detail { position: sticky; top: 16px; align-self: start; padding: 20px; max-height: calc(100vh - 32px); overflow-y: auto; }
+.detail h2 { margin: 0; font-size: 20px; }
+.detail .en { color: var(--text-muted); margin: 0 0 16px; }
+.tiles { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-bottom: 20px; }
+.tile { border: 1px solid var(--border); border-radius: 10px; padding: 10px 12px; }
+.tile span { display: block; font-size: 12px; color: var(--text-muted); }
+.tile strong { font-size: 20px; font-weight: 650; font-variant-numeric: tabular-nums; }
+.chart { margin-bottom: 20px; position: relative; }
+.chart h3 { font-size: 13px; font-weight: 550; margin: 0 0 6px; color: var(--text-secondary); }
+.chart svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart text { fill: var(--text-muted); font-size: 11px; }
+.tip { position: absolute; pointer-events: none; background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 4px 8px; font-size: 12px; white-space: nowrap; box-shadow: 0 2px 8px rgba(0,0,0,.08); display: none; }
+.tip b { font-variant-numeric: tabular-nums; }
+.note { color: var(--text-muted); font-size: 12px; margin: 0; }
+footer { max-width: 1280px; margin: 0 auto; padding: 0 24px 32px; color: var(--text-muted); font-size: 12px; }
+.empty { padding: 40px; text-align: center; color: var(--text-muted); }
+@media (max-width: 960px) {
+  main { grid-template-columns: 1fr; }
+  .detail { position: static; max-height: none; }
+}
+@media (max-width: 640px) {
+  header, .filters { padding-left: 16px; padding-right: 16px; }
+  main, footer { padding-left: 16px; padding-right: 16px; }
+  .hide-sm { display: none; }
+  .filters input { max-width: none; }
+  .meter i { display: none; }
+  td.name { white-space: normal; }
+  td.name small { display: none; }
+  td, th { padding-left: 6px; padding-right: 6px; }
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>IP 趋势雷达 · <span id="region">北美</span></h1>
+  <p class="sub" id="sub">正在加载数据…</p>
+</header>
+<div class="filters">
+  <input id="q" type="search" placeholder="搜索 IP 名称" aria-label="搜索 IP 名称">
+  <select id="type" aria-label="类型"><option value="">全部类型</option></select>
+  <select id="stage" aria-label="阶段"><option value="">全部阶段</option></select>
+  <span class="count" id="count"></span>
+</div>
+<main>
+  <section class="card table-wrap">
+    <table>
+      <thead><tr>
+        <th data-k="rank" class="num">排名</th>
+        <th data-k="name_zh">IP</th>
+        <th data-k="type" class="hide-sm">类型</th>
+        <th data-k="stage_zh">阶段</th>
+        <th data-k="momentum">动量分</th>
+        <th data-k="growth_pct" class="num">近 4 周</th>
+        <th data-k="rising" class="hide-sm">正在上升的数据源</th>
+        <th class="hide-sm" data-k="">近 12 周</th>
+      </tr></thead>
+      <tbody id="rows"></tbody>
+    </table>
+  </section>
+  <aside class="card detail" id="detail"></aside>
+</main>
+<footer>
+  动量分 0–100 是这批 IP 之间的相对排名，综合近 4 周相对前 4 周的增速、加速度和多个数据源同时上升的程度。
+  阶段：增速超过约 22% 时，关注度在后一半为「萌芽」、前一半为「爆发」；增速低于约 −18% 为「衰退」；其余为「成熟」或「平稳」。
+  每天北京时间 18:00 自动更新。
+</footer>
+<script>
+const $ = (id) => document.getElementById(id);
+const fmt = new Intl.NumberFormat("zh-CN");
+const fmtCompact = new Intl.NumberFormat("zh-CN", { notation: "compact", maximumFractionDigits: 1 });
+const tickText = (v) => (Math.abs(v) >= 10 ? fmtCompact.format(Math.round(v)) : fmtCompact.format(v));
+const STAGE_ORDER = ["爆发", "萌芽", "成熟", "平稳", "衰退", "数据不足"];
+let data, items = [], selected = null, sortKey = "rank", sortDir = 1;
+
+function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
+function srcNames(list) { return list.map((s) => data.source_names[s] || s).join("、"); }
+function chgClass(v) { return v > 10 ? "up" : v < -10 ? "down" : ""; }
+function chgText(v) { return (v > 0 ? "+" : "") + Math.round(v) + "%"; }
+
+function spark(values) {
+  if (!values.length) return "";
+  const w = 96, h = 24, lo = Math.min(...values), hi = Math.max(...values), span = hi - lo || 1;
+  const pts = values.map((v, i) => `${(i / Math.max(values.length - 1, 1) * w).toFixed(1)},${(h - 2 - (v - lo) / span * (h - 4)).toFixed(1)}`);
+  return `<svg class="spark" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" aria-hidden="true"><polyline points="${pts.join(" ")}" fill="none" stroke="var(--series-1)" stroke-width="1.5" stroke-linejoin="round" stroke-linecap="round"/></svg>`;
+}
+
+function sortVal(it, k) {
+  if (k === "rank") return it.rank ?? 1e9;
+  if (k === "rising") return -it.rising_sources.length;
+  if (k === "stage_zh") return STAGE_ORDER.indexOf(it.stage_zh);
+  if (k === "momentum" || k === "growth_pct") return -(it.rank ? it[k] : -1e9);
+  return it[k];
+}
+
+function renderTable() {
+  const q = $("q").value.trim().toLowerCase(), t = $("type").value, st = $("stage").value;
+  const list = items.filter((it) =>
+    (!q || it.name_zh.toLowerCase().includes(q) || it.name_en.toLowerCase().includes(q)) &&
+    (!t || it.type === t) && (!st || it.stage_zh === st));
+  list.sort((a, b) => {
+    const x = sortVal(a, sortKey), y = sortVal(b, sortKey);
+    return (x < y ? -1 : x > y ? 1 : 0) * sortDir || (a.rank ?? 1e9) - (b.rank ?? 1e9);
+  });
+  document.querySelectorAll("th[data-k]").forEach((th) => {
+    th.removeAttribute("aria-sort");
+    if (th.dataset.k && th.dataset.k === sortKey) th.setAttribute("aria-sort", sortDir === 1 ? "descending" : "ascending");
+  });
+  $("count").textContent = `显示 ${list.length} / ${items.length} 个 IP`;
+  $("rows").innerHTML = list.length ? list.map((it) => `
+    <tr data-id="${esc(it.ip_id)}" tabindex="0" class="${selected === it.ip_id ? "active" : ""}">
+      <td class="rank num">${it.rank ?? "—"}</td>
+      <td class="name">${esc(it.name_zh)}<small>${esc(it.name_en)}</small></td>
+      <td class="hide-sm">${esc(it.type)}</td>
+      <td><span class="stage ${it.stage}">${it.stage_zh}</span></td>
+      <td>${it.rank ? `<span class="meter"><i><b style="width:${it.momentum}%"></b></i>${it.momentum}</span>` : "—"}</td>
+      <td class="num chg ${it.rank ? chgClass(it.growth_pct) : ""}">${it.rank ? chgText(it.growth_pct) : "—"}</td>
+      <td class="srcs hide-sm">${srcNames(it.rising_sources) || "—"}</td>
+      <td class="hide-sm">${spark(it.spark)}</td>
+    </tr>`).join("") : `<tr><td colspan="8" class="empty">没有符合条件的 IP</td></tr>`;
+}
+
+function lineChart(chart) {
+  const pts = chart.points;
+  const W = 380, H = 150, L = 44, R = 8, T = 8, B = 22;
+  const vals = pts.map((p) => p[1]);
+  let lo = Math.min(0, ...vals), hi = Math.max(...vals);
+  if (hi === lo) hi = lo + 1;
+  const x = (i) => L + (pts.length > 1 ? i / (pts.length - 1) : 0.5) * (W - L - R);
+  const y = (v) => T + (1 - (v - lo) / (hi - lo)) * (H - T - B);
+  const ticks = [lo, (lo + hi) / 2, hi];
+  const grid = ticks.map((v) => `<line x1="${L}" x2="${W - R}" y1="${y(v).toFixed(1)}" y2="${y(v).toFixed(1)}" stroke="var(--grid)"/>` +
+    `<text x="${L - 6}" y="${(y(v) + 4).toFixed(1)}" text-anchor="end">${tickText(v)}</text>`).join("");
+  const step = Math.max(1, Math.ceil(pts.length / 4));
+  const xl = pts.map((p, i) => (i % step === 0 ? `<text x="${x(i).toFixed(1)}" y="${H - 4}" text-anchor="middle">${p[0].slice(2, 7).replace("-", "/")}</text>` : "")).join("");
+  const line = pts.map((p, i) => `${x(i).toFixed(1)},${y(p[1]).toFixed(1)}`).join(" ");
+  const area = `${x(0).toFixed(1)},${y(lo).toFixed(1)} ${line} ${x(pts.length - 1).toFixed(1)},${y(lo).toFixed(1)}`;
+  return `<div class="chart"><h3>${esc(chart.label)}</h3>
+    <svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(chart.label)}，近 ${pts.length} 周">
+      ${grid}${xl}
+      <polygon points="${area}" fill="var(--series-1-soft)"/>
+      <polyline points="${line}" fill="none" stroke="var(--series-1)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+      <line class="cross" y1="${T}" y2="${H - B}" stroke="var(--text-muted)" stroke-dasharray="3 3" visibility="hidden" vector-effect="non-scaling-stroke"/>
+      <circle class="dot" r="4" fill="var(--series-1)" stroke="var(--surface)" stroke-width="2" visibility="hidden"/>
+      <rect class="hit" x="${L}" y="0" width="${W - L - R}" height="${H}" fill="transparent"/>
+    </svg><div class="tip"></div></div>`;
+}
+
+function bindHover(el, chart) {
+  const svg = el.querySelector("svg"), tip = el.querySelector(".tip"), cross = el.querySelector(".cross"), dot = el.querySelector(".dot");
+  const pts = chart.points, W = 380, H = 150, L = 44, R = 8, T = 8, B = 22;
+  const vals = pts.map((p) => p[1]);
+  let lo = Math.min(0, ...vals), hi = Math.max(...vals);
+  if (hi === lo) hi = lo + 1;
+  const move = (ev) => {
+    const box = svg.getBoundingClientRect();
+    const sx = (ev.clientX - box.left) / box.width * W;
+    const i = Math.max(0, Math.min(pts.length - 1, Math.round((sx - L) / (W - L - R) * (pts.length - 1))));
+    const px = L + (pts.length > 1 ? i / (pts.length - 1) : 0.5) * (W - L - R);
+    const py = T + (1 - (pts[i][1] - lo) / (hi - lo)) * (H - T - B);
+    cross.setAttribute("x1", px); cross.setAttribute("x2", px); cross.setAttribute("visibility", "visible");
+    dot.setAttribute("cx", px); dot.setAttribute("cy", py); dot.setAttribute("visibility", "visible");
+    tip.innerHTML = `${pts[i][0]} 当周<br><b>${fmt.format(pts[i][1])}</b>`;
+    tip.style.display = "block";
+    const left = px / W * box.width, tw = tip.offsetWidth;
+    tip.style.left = Math.min(Math.max(left - tw / 2, 0), box.width - tw) + "px";
+    tip.style.top = (py / H * box.height + 24) + "px";
+  };
+  const hide = () => { tip.style.display = "none"; cross.setAttribute("visibility", "hidden"); dot.setAttribute("visibility", "hidden"); };
+  svg.addEventListener("pointermove", move);
+  svg.addEventListener("pointerleave", hide);
+}
+
+function renderDetail() {
+  const it = items.find((x) => x.ip_id === selected);
+  const box = $("detail");
+  if (!it) { box.innerHTML = `<p class="empty">点击左侧任一 IP 查看趋势</p>`; return; }
+  box.innerHTML = `
+    <h2>${esc(it.name_zh)}</h2>
+    <p class="en">${esc(it.name_en)} · ${esc(it.type)}</p>
+    <div class="tiles">
+      <div class="tile"><span>动量分${it.rank ? `（第 ${it.rank} 名）` : ""}</span><strong>${it.rank ? it.momentum : "—"}</strong></div>
+      <div class="tile"><span>近 4 周变化</span><strong class="chg ${it.rank ? chgClass(it.growth_pct) : ""}">${it.rank ? chgText(it.growth_pct) : "—"}</strong></div>
+      <div class="tile"><span>阶段</span><strong>${it.stage_zh}</strong></div>
+      <div class="tile"><span>正在上升的数据源</span><strong style="font-size:14px">${srcNames(it.rising_sources) || "无"}</strong></div>
+    </div>
+    ${it.charts.length ? it.charts.map(lineChart).join("") : `<p class="note">暂无数据</p>`}
+    <p class="note">每张图是近一年的周数据，各自独立刻度。有数据的来源：${srcNames(it.sources) || "无"}。</p>`;
+  box.querySelectorAll(".chart").forEach((el, i) => bindHover(el, it.charts[i]));
+}
+
+function select(id) {
+  selected = id;
+  document.querySelectorAll("#rows tr").forEach((tr) => tr.classList.toggle("active", tr.dataset.id === id));
+  renderDetail();
+  if (window.matchMedia("(max-width: 960px)").matches) $("detail").scrollIntoView({ behavior: "smooth", block: "start" });
+}
+
+async function init() {
+  try {
+    const res = await fetch("data.json", { cache: "no-cache" });
+    if (!res.ok) throw new Error(res.status);
+    data = await res.json();
+  } catch (e) {
+    $("sub").textContent = "数据加载失败，请稍后刷新。";
+    return;
+  }
+  items = data.items;
+  $("region").textContent = data.region;
+  const ranked = items.filter((x) => x.rank).length;
+  $("sub").textContent = `数据截至 ${data.as_of} · ${items.length} 个种子 IP，${ranked} 个参与排名`;
+  [...new Set(items.map((x) => x.type))].forEach((t) => $("type").add(new Option(t, t)));
+  STAGE_ORDER.filter((s) => items.some((x) => x.stage_zh === s)).forEach((s) => $("stage").add(new Option(s, s)));
+  ["q", "type", "stage"].forEach((id) => $(id).addEventListener("input", renderTable));
+  document.querySelectorAll("th[data-k]").forEach((th) => th.addEventListener("click", () => {
+    if (!th.dataset.k) return;
+    sortDir = sortKey === th.dataset.k ? -sortDir : 1;
+    sortKey = th.dataset.k;
+    renderTable();
+  }));
+  $("rows").addEventListener("click", (e) => { const tr = e.target.closest("tr[data-id]"); if (tr) select(tr.dataset.id); });
+  $("rows").addEventListener("keydown", (e) => { const tr = e.target.closest("tr[data-id]"); if (tr && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); select(tr.dataset.id); } });
+  selected = (items.find((x) => x.rank === 1) || items[0] || {}).ip_id;
+  renderTable();
+  renderDetail();
+}
+init();
+</script>
+</body>
+</html>
