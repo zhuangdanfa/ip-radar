@@ -58,8 +58,9 @@ def test_reddit_rows():
 
 
 class FakeTrends:
-    def __init__(self, fail_terms=()):
+    def __init__(self, fail_terms=(), flaky_terms=()):
         self.fail_terms, self.term = fail_terms, None
+        self.flaky = set(flaky_terms)  # 第一次失败、重试成功
 
     def build_payload(self, kw, timeframe, geo):
         assert geo == "US"
@@ -68,10 +69,28 @@ class FakeTrends:
     def interest_over_time(self):
         if self.term in self.fail_terms:
             raise RuntimeError("429")
+        if self.term in self.flaky:
+            self.flaky.discard(self.term)
+            raise RuntimeError("429")
         idx = pd.to_datetime(["2026-09-20", "2026-09-27", "2026-10-04"])
         return pd.DataFrame({self.term: [40, 60, 70], "isPartial": [False, False, True]}, index=idx)
 
 
 def test_trends_drops_partial_week_and_survives_failures():
-    rows = trends.collect([SEED, GONE], pause=0, client=FakeTrends(fail_terms={"Gone"}))
+    rows = trends.collect([SEED, GONE], pause=0, retry_wait=0, client=FakeTrends(fail_terms={"Gone"}))
     assert [(r.date, r.value) for r in rows] == [("2026-09-20", 40.0), ("2026-09-27", 60.0)]
+
+
+def test_trends_retries_once_after_failure():
+    rows = trends.collect([SEED], pause=0, retry_wait=0, client=FakeTrends(flaky_terms={SEED.search_term}))
+    assert len(rows) == 2
+
+
+
+def test_trends_client_skips_pytrends_retry():
+    # pytrends 4.9.2 在 retries>0 时用 urllib3 2.x 已删除的 method_whitelist 参数，每次请求都会失败
+    from unittest import mock
+    from pytrends import request
+    with mock.patch.object(request.TrendReq, "GetGoogleCookie", return_value={}):
+        client = trends._client()
+    assert client.retries == 0 and client.backoff_factor == 0
