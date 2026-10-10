@@ -67,6 +67,16 @@ def cmd_report(args) -> int:
     return 0
 
 
+def cmd_site(args) -> int:
+    from ipradar.site import build_site
+    seeds = load_seeds()
+    as_of = date.fromisoformat(args.as_of) if args.as_of else date.today()
+    rows = read_rows()
+    scores = scoring.score(rows, [s.ip_id for s in seeds], as_of=as_of)
+    print(f"网页看板已生成到 {build_site(scores, seeds, rows, as_of)}")
+    return 0
+
+
 def cmd_backtest(args) -> int:
     """看某个 IP 在过去每一周的排名，用来检验系统能提前多少周发现它。"""
     seeds = load_seeds()
@@ -101,6 +111,9 @@ def main(argv: list[str] | None = None) -> int:
     r = sub.add_parser("report", help="计算动量分并生成 reports/latest.md")
     r.add_argument("--as-of", help="按某天为截止日计算，YYYY-MM-DD")
     r.set_defaults(func=cmd_report)
+    w = sub.add_parser("site", help="生成网页看板到 _site/（由 GitHub Pages 发布）")
+    w.add_argument("--as-of", help="按某天为截止日计算，YYYY-MM-DD")
+    w.set_defaults(func=cmd_site)
     b = sub.add_parser("backtest", help="查看某个 IP 过去每周的排名")
     b.add_argument("ip")
     b.add_argument("--weeks", type=int, default=26)

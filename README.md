@@ -1,6 +1,9 @@
 # IP 趋势雷达 · 北美原型
 
-每天自动采集北美市场的公开数据，找出关注度正在加速上升的 IP，生成一份上升榜：[`reports/latest.md`](reports/latest.md)。
+每天自动采集北美市场的公开数据，找出关注度正在加速上升的 IP，生成一份上升榜：
+
+- **网页看板**：<https://zhuangdanfa.github.io/ip-radar/>（排行、筛选、每个 IP 近一年的趋势图）
+- **Markdown 版**：[`reports/latest.md`](reports/latest.md)
 
 这是 4 周原型的第一阶段：先用 4 个官方或公开的数据源，覆盖约 50 个种子 IP，验证「动量分」能不能提前发现走红的 IP。
 
@@ -22,9 +25,11 @@
 1. 采集数据，追加到 `data/metrics.csv`
 2. 计算动量分，生成 `reports/latest.md` 和 `data/scores_latest.json`
 3. 把更新提交回仓库
+4. 采集完成后，「发布网页看板」（`.github/workflows/pages.yml`）重新生成网页看板并发布到 GitHub Pages
 
 ## 第一次使用
 
+0. **打开网页看板**：仓库 **Settings → Pages**，「Build and deployment」下的 Source 选 **GitHub Actions**。然后在 Actions 页面运行一次「发布网页看板」，看板地址见本页顶部。
 1. **回填历史数据**：打开仓库的 **Actions** 页面，选「每日采集与上升榜」，点 **Run workflow**，「回溯天数」填 `400`，「数据源」填 `wikipedia,trends`，运行。几分钟后 `reports/latest.md` 就会出现第一份上升榜。
 2. **加上 YouTube**：在 [Google Cloud Console](https://console.cloud.google.com/) 新建项目，启用 YouTube Data API v3，创建一个 API 密钥。
 3. **加上 Reddit**：在 [reddit.com/prefs/apps](https://www.reddit.com/prefs/apps) 创建一个 *script* 类型的应用，记下 client id 和 secret。
@@ -48,6 +53,7 @@
 pip install -r requirements-dev.txt
 python -m ipradar collect --sources wikipedia,trends --days 400   # 采集
 python -m ipradar report                                          # 生成上升榜
+python -m ipradar site && python -m http.server -d _site 8000     # 生成网页看板，浏览器打开 localhost:8000
 python -m ipradar backtest labubu --weeks 52                      # 看某个 IP 过去每周的排名
 python -m pytest -q                                               # 测试
 ```
