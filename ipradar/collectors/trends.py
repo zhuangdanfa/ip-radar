@@ -18,7 +18,9 @@ log = logging.getLogger(__name__)
 
 def _client():
     from pytrends.request import TrendReq  # 延迟导入：没装 pytrends 也能跑其他数据源
-    return TrendReq(hl="en-US", tz=300, retries=2, backoff_factor=1.0)
+    # 不传 retries/backoff_factor：pytrends 4.9.2 会用 urllib3 2.x 已删除的参数 method_whitelist 构造 Retry，
+    # 导致每次请求都报错。重试改由 collect() 自己做。
+    return TrendReq(hl="en-US", tz=300)
 
 
 def fetch_interest(client, term: str, timeframe: str = "today 12-m") -> list[tuple[str, float]]:
@@ -31,15 +33,22 @@ def fetch_interest(client, term: str, timeframe: str = "today 12-m") -> list[tup
     return [(idx.strftime("%Y-%m-%d"), float(v)) for idx, v in df[term].items()]
 
 
-def collect(seeds: list[Seed], pause: float = 5.0, client=None) -> list[Row]:
+def collect(seeds: list[Seed], pause: float = 5.0, retry_wait: float = 60.0, client=None) -> list[Row]:
     client = client or _client()
     rows: list[Row] = []
     for i, s in enumerate(seeds):
         if i:
             time.sleep(pause)  # 放慢节奏，减少被限速
-        try:
-            for d, v in fetch_interest(client, s.search_term):
-                rows.append(Row(d, s.ip_id, "trends", "interest", v))
-        except Exception as e:  # pytrends 被限速时抛各种异常，不让一个 IP 拖垮整轮
-            log.warning("Google Trends 采集失败 %s：%s", s.ip_id, e)
+        for attempt in (1, 2):
+            try:
+                points = fetch_interest(client, s.search_term)
+                break
+            except Exception as e:  # pytrends 被限速时抛各种异常，等一会儿重试一次，仍失败就跳过这个 IP
+                if attempt == 1:
+                    log.info("Google Trends 请求失败 %s，%.0f 秒后重试：%s", s.ip_id, retry_wait, e)
+                    time.sleep(retry_wait)
+                else:
+                    log.warning("Google Trends 采集失败 %s：%s", s.ip_id, e)
+                    points = []
+        rows.extend(Row(d, s.ip_id, "trends", "interest", v) for d, v in points)
     return rows
