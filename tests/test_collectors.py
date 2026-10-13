@@ -1,4 +1,4 @@
-from datetime import date, datetime, timezone
+from datetime import date, datetime, timedelta, timezone
 
 import pandas as pd
 
@@ -94,3 +94,33 @@ def test_trends_client_skips_pytrends_retry():
     with mock.patch.object(request.TrendReq, "GetGoogleCookie", return_value={}):
         client = trends._client()
     assert client.retries == 0 and client.backoff_factor == 0
+
+
+def bili_page(pubdates, play=10):
+    return {"code": 0, "data": {"result": [{"pubdate": int(p.timestamp()), "play": play} for p in pubdates]}}
+
+
+def test_bilibili_counts_last_7_days():
+    from ipradar.collectors import bilibili
+    now = datetime(2026, 10, 14, tzinfo=timezone.utc)
+    page = bili_page([now - timedelta(days=1), now - timedelta(days=3), now - timedelta(days=9)])
+    s = FakeSession([("search/type", 200, page), ("www.bilibili.com", 200, {})])
+    rows = bilibili.collect(s, [SEED], now=now, pause=0)
+    assert {(r.metric, r.value) for r in rows} == {("new_videos_7d", 2), ("views_7d", 20)}
+    bad = FakeSession([("search/type", 200, {"code": -412, "message": "请求被拦截"})])
+    assert bilibili.collect(bad, [SEED], now=now, pause=0) == []
+
+
+def test_bilibili_backfill_keeps_only_fully_covered_weeks():
+    from ipradar.collectors import bilibili
+    now = datetime(2026, 10, 14, tzinfo=timezone.utc)  # 周三；本周从 10-12 开始
+    # 一页 20 条都在 10-01（上上周四）之后，翻页没到底，所以只有完整覆盖的上周可用
+    full = bili_page([datetime(2026, 10, 13, tzinfo=timezone.utc)] * 5 + [datetime(2026, 10, 6, tzinfo=timezone.utc)] * 14
+                     + [datetime(2026, 10, 1, tzinfo=timezone.utc)])
+    s = FakeSession([("search/type", 200, full)])
+    assert bilibili.backfill_weeks(s, "x", now, weeks=4, max_pages=1, pause=0) == [(date(2026, 10, 11), 14)]
+    # 翻到底（不足 20 条），4 周全部可用，没有视频的周记 0
+    short = bili_page([datetime(2026, 10, 6, tzinfo=timezone.utc)] * 3 + [datetime(2026, 9, 22, tzinfo=timezone.utc)])
+    s = FakeSession([("search/type", 200, short)])
+    assert bilibili.backfill_weeks(s, "x", now, weeks=4, pause=0) == [
+        (date(2026, 9, 20), 0), (date(2026, 9, 27), 1), (date(2026, 10, 4), 0), (date(2026, 10, 11), 3)]

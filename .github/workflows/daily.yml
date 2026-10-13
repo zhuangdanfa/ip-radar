@@ -6,11 +6,14 @@ on:
   workflow_dispatch:
     inputs:
       days:
-        description: "Wikipedia 回溯天数（第一次运行填 400，用于回测）"
+        description: "回溯天数（第一次运行填 400：Wikipedia 回填一年多，B站回填 26 周）"
         default: "14"
       sources:
-        description: "数据源，逗号分隔"
-        default: "wikipedia,trends,youtube,reddit"
+        description: "数据源，逗号分隔；留空表示全部（北美 wikipedia,trends,youtube,reddit；中国 bilibili）"
+        default: ""
+      regions:
+        description: "地区，空格分隔：na 北美，cn 中国"
+        default: "na cn"
 
 permissions:
   contents: write
@@ -34,12 +37,19 @@ jobs:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           REDDIT_CLIENT_ID: ${{ secrets.REDDIT_CLIENT_ID }}
           REDDIT_CLIENT_SECRET: ${{ secrets.REDDIT_CLIENT_SECRET }}
-        run: >
-          python -m ipradar collect
-          --days "${{ github.event.inputs.days || '14' }}"
-          --sources "${{ github.event.inputs.sources || 'wikipedia,trends,youtube,reddit' }}"
+          DAYS: ${{ github.event.inputs.days || '14' }}
+          SOURCES: ${{ github.event.inputs.sources }}
+          REGIONS: ${{ github.event.inputs.regions || 'na cn' }}
+        # 一个地区采集失败不影响另一个地区，已采到的数据照常提交
+        run: |
+          for r in $REGIONS; do
+            python -m ipradar collect --region "$r" --days "$DAYS" ${SOURCES:+--sources "$SOURCES"} \
+              || echo "::warning::$r 采集失败"
+          done
       - name: 生成上升榜
-        run: python -m ipradar report
+        run: |
+          python -m ipradar report --region na
+          python -m ipradar report --region cn
       - name: 提交数据
         run: |
           git config user.name "ip-radar-bot"

@@ -63,6 +63,10 @@ body {
 header { padding: 24px 24px 8px; max-width: 1280px; margin: 0 auto; }
 h1 { font-size: 22px; margin: 0 0 4px; font-weight: 650; }
 .sub { color: var(--text-secondary); margin: 0; }
+.tabs { display: flex; gap: 4px; margin: 8px 0; }
+.tabs:empty { display: none; }
+.tabs button { font: inherit; color: var(--text-secondary); background: transparent; border: 1px solid var(--border); border-radius: 999px; padding: 4px 14px; cursor: pointer; min-height: 32px; }
+.tabs button[aria-selected="true"] { color: var(--surface); background: var(--text-primary); border-color: var(--text-primary); }
 .filters { display: flex; flex-wrap: wrap; gap: 8px; padding: 12px 24px; max-width: 1280px; margin: 0 auto; }
 .filters input, .filters select {
   font: inherit; color: var(--text-primary); background: var(--surface);
@@ -131,6 +135,7 @@ footer { max-width: 1280px; margin: 0 auto; padding: 0 24px 32px; color: var(--t
 <body>
 <header>
   <h1>IP 趋势雷达 · <span id="region">北美</span></h1>
+  <nav class="tabs" id="tabs" role="tablist" aria-label="地区"></nav>
   <p class="sub" id="sub">正在加载数据…</p>
 </header>
 <div class="filters">
@@ -168,7 +173,7 @@ const fmt = new Intl.NumberFormat("zh-CN");
 const fmtCompact = new Intl.NumberFormat("zh-CN", { notation: "compact", maximumFractionDigits: 1 });
 const tickText = (v) => (Math.abs(v) >= 10 ? fmtCompact.format(Math.round(v)) : fmtCompact.format(v));
 const STAGE_ORDER = ["爆发", "萌芽", "成熟", "平稳", "衰退", "数据不足"];
-let data, items = [], selected = null, sortKey = "rank", sortDir = 1;
+let all, data, items = [], selected = null, sortKey = "rank", sortDir = 1;
 
 function esc(s) { return String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])); }
 function srcNames(list) { return list.map((s) => data.source_names[s] || s).join("、"); }
@@ -297,17 +302,16 @@ async function init() {
   try {
     const res = await fetch("data.json", { cache: "no-cache" });
     if (!res.ok) throw new Error(res.status);
-    data = await res.json();
+    all = await res.json();
   } catch (e) {
     $("sub").textContent = "数据加载失败，请稍后刷新。";
     return;
   }
-  items = data.items;
-  $("region").textContent = data.region;
-  const ranked = items.filter((x) => x.rank).length;
-  $("sub").textContent = `数据截至 ${data.as_of} · ${items.length} 个种子 IP，${ranked} 个参与排名`;
-  [...new Set(items.map((x) => x.type))].forEach((t) => $("type").add(new Option(t, t)));
-  STAGE_ORDER.filter((s) => items.some((x) => x.stage_zh === s)).forEach((s) => $("stage").add(new Option(s, s)));
+  const regions = all.regions || [];
+  if (regions.length > 1) {
+    $("tabs").innerHTML = regions.map((r) => `<button role="tab" data-r="${esc(r.id)}">${esc(r.name)}</button>`).join("");
+    $("tabs").addEventListener("click", (e) => { const b = e.target.closest("button[data-r]"); if (b) setRegion(b.dataset.r); });
+  }
   ["q", "type", "stage"].forEach((id) => $(id).addEventListener("input", renderTable));
   document.querySelectorAll("th[data-k]").forEach((th) => th.addEventListener("click", () => {
     if (!th.dataset.k) return;
@@ -317,6 +321,25 @@ async function init() {
   }));
   $("rows").addEventListener("click", (e) => { const tr = e.target.closest("tr[data-id]"); if (tr) select(tr.dataset.id); });
   $("rows").addEventListener("keydown", (e) => { const tr = e.target.closest("tr[data-id]"); if (tr && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); select(tr.dataset.id); } });
+  window.addEventListener("hashchange", () => setRegion(location.hash.slice(1)));
+  setRegion(location.hash.slice(1));
+}
+
+function setRegion(id) {
+  const regions = all.regions || [];
+  data = regions.find((r) => r.id === id) || regions[0];
+  if (!data) { $("sub").textContent = "还没有数据。"; return; }
+  if (location.hash.slice(1) !== data.id && regions.length > 1) history.replaceState(null, "", "#" + data.id);
+  items = data.items;
+  document.querySelectorAll("#tabs button").forEach((b) => b.setAttribute("aria-selected", b.dataset.r === data.id));
+  $("region").textContent = data.name;
+  const ranked = items.filter((x) => x.rank).length;
+  $("sub").textContent = ranked
+    ? `数据截至 ${all.as_of} · ${items.length} 个种子 IP，${ranked} 个参与排名`
+    : `${items.length} 个种子 IP，数据还在积累中：每个 IP 至少需要 8 周数据才能参与排名`;
+  $("type").length = 1; $("stage").length = 1; $("q").value = "";
+  [...new Set(items.map((x) => x.type))].forEach((t) => $("type").add(new Option(t, t)));
+  STAGE_ORDER.filter((s) => items.some((x) => x.stage_zh === s)).forEach((s) => $("stage").add(new Option(s, s)));
   selected = (items.find((x) => x.rank === 1) || items[0] || {}).ip_id;
   renderTable();
   renderDetail();

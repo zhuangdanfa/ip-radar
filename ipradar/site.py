@@ -6,11 +6,11 @@ import shutil
 from datetime import date
 from pathlib import Path
 
-from ipradar.config import ROOT
+from ipradar.config import ROOT, Region
 from ipradar.report import SOURCE_ZH
-from ipradar.score import IpScore, weekly_series
-from ipradar.seeds import Seed
-from ipradar.store import Row
+from ipradar.score import IpScore, score, weekly_series
+from ipradar.seeds import Seed, load_seeds
+from ipradar.store import Row, read_rows
 
 TEMPLATE = ROOT / "web" / "index.html"
 SITE_DIR = ROOT / "_site"
@@ -24,6 +24,8 @@ METRIC_ZH = {
     ("reddit", "posts_7d"): "Reddit 近 7 天提及帖子数",
     ("reddit", "engagement_7d"): "Reddit 近 7 天互动量",
     ("reddit", "subscribers"): "Reddit 板块订阅数",
+    ("bilibili", "new_videos_7d"): "B站近 7 天新视频数",
+    ("bilibili", "views_7d"): "B站近 7 天新视频总播放量",
 }
 
 
@@ -47,13 +49,21 @@ def build_payload(scores: list[IpScore], seeds: list[Seed], rows: list[Row], as_
             "growth_pct": round(sc.growth_pct, 1), "rising_sources": sc.rising_sources, "sources": sc.sources,
             "spark": [round(v, 1) for v in sc.spark], "charts": charts,
         })
-    return {"as_of": as_of.isoformat(), "region": "北美", "source_names": SOURCE_ZH, "items": items}
+    return {"source_names": SOURCE_ZH, "items": items}
 
 
-def build_site(scores: list[IpScore], seeds: list[Seed], rows: list[Row], as_of: date,
-               out_dir: Path = SITE_DIR) -> Path:
+def build_site(regions: list[Region], as_of: date, out_dir: Path = SITE_DIR) -> Path:
+    """每个有种子清单的地区一份榜单，页面上切换。"""
     out_dir.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(TEMPLATE, out_dir / "index.html")
-    payload = build_payload(scores, seeds, rows, as_of)
+    payload = {"as_of": as_of.isoformat(), "regions": []}
+    for region in regions:
+        if not region.seed_file.exists():
+            continue
+        seeds = load_seeds(region.seed_file)
+        rows = read_rows(region.metrics_file)
+        scores = score(rows, [s.ip_id for s in seeds], as_of=as_of)
+        payload["regions"].append({"id": region.id, "name": region.name,
+                                   **build_payload(scores, seeds, rows, as_of)})
     (out_dir / "data.json").write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), "utf-8")
     return out_dir
