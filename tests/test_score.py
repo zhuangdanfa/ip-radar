@@ -54,3 +54,10 @@ def test_as_of_ignores_future_rows():
     rows = daily("a", START, [10] * 8 + [100] * 4)
     early = score(rows, ["a"], as_of=START + timedelta(days=8 * 7 - 1))[0]
     assert early.growth == 0.0
+
+
+def test_attention_falls_back_to_bilibili():
+    rows = daily("a", START, [10] * 4 + [30] * 4, source="bilibili", metric="new_videos_7d")
+    rows += daily("b", START, [50] * 8, source="bilibili", metric="new_videos_7d")
+    res = {r.ip_id: r for r in score(rows, ["a", "b"], as_of=START + timedelta(days=56))}
+    assert res["a"].spark and res["a"].level == 30 and res["b"].level == 50

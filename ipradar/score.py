@@ -22,6 +22,8 @@ from ipradar.store import Row
 
 W_GROWTH, W_ACCEL, W_BREADTH = 0.45, 0.25, 0.30
 RISING = 0.10  # 增速超过约 10% 算「在上升」
+# 衡量「关注度高低」用的指标，按顺序取该 IP 第一个有数据的
+ATTENTION = [("wikipedia", "pageviews"), ("trends", "interest"), ("bilibili", "new_videos_7d")]
 STAGE_ZH = {"emerging": "萌芽", "breakout": "爆发", "mature": "成熟", "declining": "衰退", "steady": "平稳",
             "insufficient": "数据不足"}
 
@@ -122,7 +124,7 @@ def score(rows: list[Row], ip_ids: list[str], as_of: date | None = None) -> list
             srcs.add(source)
             if g > RISING:
                 src_rising.add(source)
-        attention = series.get((ip, "wikipedia", "pageviews")) or series.get((ip, "trends", "interest")) or []
+        attention = next((series[(ip, *k)] for k in ATTENTION if series.get((ip, *k))), [])
         sc.spark = [v for _, v in attention[-12:]]
         if gs:
             sc.growth, sc.accel = mean(gs), mean(accs)
