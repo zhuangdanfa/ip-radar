@@ -4,12 +4,13 @@ import json
 from datetime import date
 from pathlib import Path
 
-from ipradar.config import METRICS_FILE, REPORT_DIR
+from ipradar.config import REGIONS, Region
 from ipradar.score import IpScore
 from ipradar.seeds import Seed
 
 BLOCKS = "▁▂▃▄▅▆▇█"
-SOURCE_ZH = {"wikipedia": "Wikipedia", "trends": "Google Trends", "youtube": "YouTube", "reddit": "Reddit"}
+SOURCE_ZH = {"wikipedia": "Wikipedia", "trends": "Google Trends", "youtube": "YouTube", "reddit": "Reddit",
+             "bilibili": "B站"}
 
 
 def sparkline(values: list[float]) -> str:
@@ -20,12 +21,13 @@ def sparkline(values: list[float]) -> str:
     return "".join(BLOCKS[min(int((v - lo) / span * (len(BLOCKS) - 1) + 0.5), len(BLOCKS) - 1)] for v in values)
 
 
-def render_markdown(scores: list[IpScore], seeds: list[Seed], as_of: date, top: int = 30) -> str:
+def render_markdown(scores: list[IpScore], seeds: list[Seed], as_of: date, top: int = 30,
+                    region_name: str = "北美") -> str:
     by_id = {s.ip_id: s for s in seeds}
     ranked = [s for s in scores if s.stage != "insufficient"]
     missing = [s for s in scores if s.stage == "insufficient"]
     lines = [
-        f"# 北美 IP 上升榜 · {as_of.isoformat()}",
+        f"# {region_name} IP 上升榜 · {as_of.isoformat()}",
         "",
         f"共 {len(scores)} 个种子 IP，{len(ranked)} 个有足够数据（至少 8 周）参与排名。"
         "动量分 0–100 是在这批 IP 里的相对排名，看的是近 4 周相对前 4 周的增速、加速度和多平台同时上升的程度。",
@@ -45,10 +47,10 @@ def render_markdown(scores: list[IpScore], seeds: list[Seed], as_of: date, top: 
     return "\n".join(lines)
 
 
-def write_reports(scores: list[IpScore], seeds: list[Seed], as_of: date, out_dir: Path = REPORT_DIR) -> Path:
-    out_dir.mkdir(parents=True, exist_ok=True)
-    md = out_dir / "latest.md"
-    md.write_text(render_markdown(scores, seeds, as_of), "utf-8")
+def write_reports(scores: list[IpScore], seeds: list[Seed], as_of: date, region: Region = REGIONS["na"]) -> Path:
+    region.report_dir.mkdir(parents=True, exist_ok=True)
+    md = region.report_dir / "latest.md"
+    md.write_text(render_markdown(scores, seeds, as_of, region_name=region.name), "utf-8")
     payload = {
         "as_of": as_of.isoformat(),
         "scores": [{
@@ -57,5 +59,6 @@ def write_reports(scores: list[IpScore], seeds: list[Seed], as_of: date, out_dir
             "sources": s.sources, "spark": [round(v, 1) for v in s.spark],
         } for s in scores],
     }
-    (METRICS_FILE.parent / "scores_latest.json").write_text(json.dumps(payload, ensure_ascii=False, indent=1), "utf-8")
+    region.data_dir.mkdir(parents=True, exist_ok=True)
+    (region.data_dir / "scores_latest.json").write_text(json.dumps(payload, ensure_ascii=False, indent=1), "utf-8")
     return md

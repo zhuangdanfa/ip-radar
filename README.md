@@ -1,9 +1,9 @@
-# IP 趋势雷达 · 北美原型
+# IP 趋势雷达
 
-每天自动采集北美市场的公开数据，找出关注度正在加速上升的 IP，生成一份上升榜：
+每天自动采集北美和中国市场的公开数据，找出关注度正在加速上升的 IP，生成每个地区的上升榜：
 
 - **网页看板**：<https://zhuangdanfa.github.io/ip-radar/>（排行、筛选、每个 IP 近一年的趋势图）
-- **Markdown 版**：[`reports/latest.md`](reports/latest.md)
+- **Markdown 版**：北美 [`reports/latest.md`](reports/latest.md)，中国 [`reports/cn/latest.md`](reports/cn/latest.md)
 
 这是 4 周原型的第一阶段：先用 4 个官方或公开的数据源，覆盖约 50 个种子 IP，验证「动量分」能不能提前发现走红的 IP。
 
@@ -15,6 +15,7 @@
 | Google Trends | 美国搜索热度（近 12 个月，每周一个点） | 不需要 | 近 12 个月 |
 | YouTube | 近 7 天相关视频数、播放量前 50 视频的总播放量 | `YOUTUBE_API_KEY` | 只能从开始采集那天起累积 |
 | Reddit | 近 7 天提及帖子数和互动量、相关板块订阅数 | `REDDIT_CLIENT_ID`、`REDDIT_CLIENT_SECRET` | 只能从开始采集那天起累积 |
+| B站（中国） | 近 7 天相关新视频数和这些视频的总播放量 | 不需要 | 新视频数可回填约 26 周，播放量从开始采集那天起累积 |
 
 没设置密钥的数据源会自动跳过，不影响其他数据源。
 
@@ -58,9 +59,18 @@ python -m ipradar backtest labubu --weeks 52                      # 看某个 IP
 python -m pytest -q                                               # 测试
 ```
 
+## 地区
+
+| 地区 | 种子清单 | 数据 | 数据源 |
+| --- | --- | --- | --- |
+| 北美 `na` | `seeds/na_seed.csv` | `data/metrics.csv` | Wikipedia、Google Trends、YouTube、Reddit |
+| 中国 `cn` | `seeds/cn_seed.csv` | `data/cn/metrics.csv` | B站 |
+
+命令行加 `--region cn` 处理中国，例如 `python -m ipradar collect --region cn --days 180`。中国的抖音、小红书、微博、百度指数没有免费开放的接口，需要商业合作或第三方数据服务，接入后作为新的数据源加进来。
+
 ## 增加或修改种子 IP
 
-编辑 [`seeds/na_seed.csv`](seeds/na_seed.csv)，每行一个 IP：
+编辑对应地区的种子清单（北美 [`seeds/na_seed.csv`](seeds/na_seed.csv)，中国 [`seeds/cn_seed.csv`](seeds/cn_seed.csv)），每行一个 IP：
 
 | 列 | 说明 |
 | --- | --- |
@@ -68,12 +78,13 @@ python -m pytest -q                                               # 测试
 | `name_zh` / `name_en` | 中英文名 |
 | `type` | 类型，如 动画、游戏、潮玩角色 |
 | `wikipedia_title` | 英文 Wikipedia 条目标题，重定向会自动解析，找不到会在日志里提示 |
-| `search_term` | 用于 Google Trends、YouTube、Reddit 的搜索词 |
+| `search_term` | 搜索词：北美用于 Google Trends、YouTube、Reddit；中国用于 B站搜索 |
 | `subreddit` | 相关的 Reddit 板块，没有可留空 |
 
 ## 已知限制
 
 - Wikipedia 浏览量是全球英文读者，不只美国。
 - Google Trends 用的是非官方库 pytrends，可能被限速，失败时当天跳过，不影响其他数据源。
+- B站数据来自网页搜索的公开接口，没有官方承诺，接口变动或限流时当天跳过；每个 IP 每周最多数 200 条新视频，特别热门的 IP 会封顶。
 - Reddit 免费接口面向非商业用途，公司长期使用前需确认 Reddit 的数据使用条款。
 - YouTube 免费配额每天 10,000 单位，每个 IP 约用 101 单位，种子 IP 超过约 90 个时需要申请提高配额。
