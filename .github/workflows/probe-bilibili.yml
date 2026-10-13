@@ -1,0 +1,15 @@
+name: probe-bilibili
+on:
+  push:
+    branches: [claude/china-region]
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+          curl -sS -c jar -A "$UA" -o /dev/null -w "home %{http_code}\n" https://www.bilibili.com/
+          curl -sS -b jar -A "$UA" -w "\nnav %{http_code}\n" https://api.bilibili.com/x/web-interface/nav | head -c 600; echo
+          curl -sS -b jar -A "$UA" -e https://search.bilibili.com/ -w "\nsearch %{http_code}\n" "https://api.bilibili.com/x/web-interface/search/type?search_type=video&keyword=labubu&order=pubdate" | head -c 800; echo
+          curl -sS -b jar -A "$UA" -e https://search.bilibili.com/ -w "\nwbisearch %{http_code}\n" "https://api.bilibili.com/x/web-interface/wbi/search/type?search_type=video&keyword=labubu&order=pubdate" | head -c 800; echo
+          curl -sS -A "$UA" -w "\nzhwiki %{http_code}\n" "https://wikimedia.org/api/rest_v1/metrics/pageviews/per-article/zh.wikipedia/all-access/user/Labubu/daily/20260901/20260910" | head -c 300; echo
