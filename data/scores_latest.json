@@ -1,12 +1,12 @@
 {
- "as_of": "2026-11-10",
+ "as_of": "2026-11-11",
  "scores": [
   {
    "ip_id": "helluva-boss",
    "momentum": 100,
    "stage": "breakout",
-   "growth_pct": 237.5,
-   "accel": 0.862,
+   "growth_pct": 243.2,
+   "accel": 0.88,
    "breadth": 1.0,
    "rising_sources": [
     "trends",
@@ -32,10 +32,39 @@
    ]
   },
   {
-   "ip_id": "wednesday",
+   "ip_id": "pesto-penguin",
    "momentum": 98,
+   "stage": "emerging",
+   "growth_pct": 138.4,
+   "accel": 0.851,
+   "breadth": 0.5,
+   "rising_sources": [
+    "trends"
+   ],
+   "sources": [
+    "trends",
+    "wikipedia"
+   ],
+   "spark": [
+    555.0,
+    602.0,
+    595.0,
+    586.0,
+    570.0,
+    625.0,
+    577.0,
+    651.0,
+    616.0,
+    546.0,
+    531.0,
+    602.0
+   ]
+  },
+  {
+   "ip_id": "wednesday",
+   "momentum": 96,
    "stage": "breakout",
-   "growth_pct": 73.9,
+   "growth_pct": 73.1,
    "accel": 0.373,
    "breadth": 1.0,
    "rising_sources": [
@@ -63,10 +92,10 @@
   },
   {
    "ip_id": "minions",
-   "momentum": 96,
+   "momentum": 94,
    "stage": "steady",
-   "growth_pct": 21.4,
-   "accel": 0.379,
+   "growth_pct": 22.1,
+   "accel": 0.384,
    "breadth": 1.0,
    "rising_sources": [
     "trends",
@@ -93,10 +122,10 @@
   },
   {
    "ip_id": "hazbin-hotel",
-   "momentum": 94,
+   "momentum": 92,
    "stage": "breakout",
-   "growth_pct": 28.1,
-   "accel": 0.272,
+   "growth_pct": 27.6,
+   "accel": 0.233,
    "breadth": 1.0,
    "rising_sources": [
     "trends",
@@ -123,10 +152,10 @@
   },
   {
    "ip_id": "fnaf",
-   "momentum": 92,
+   "momentum": 90,
    "stage": "mature",
-   "growth_pct": 16.0,
-   "accel": 0.128,
+   "growth_pct": 16.6,
+   "accel": 0.103,
    "breadth": 1.0,
    "rising_sources": [
     "trends",
@@ -153,10 +182,10 @@
   },
   {
    "ip_id": "miffy",
-   "momentum": 90,
+   "momentum": 88,
    "stage": "emerging",
-   "growth_pct": 24.2,
-   "accel": 0.283,
+   "growth_pct": 25.2,
+   "accel": 0.296,
    "breadth": 0.5,
    "rising_sources": [
     "trends"
@@ -182,10 +211,10 @@
   },
   {
    "ip_id": "pikachu",
-   "momentum": 88,
+   "momentum": 86,
    "stage": "mature",
-   "growth_pct": 1.1,
-   "accel": 0.53,
+   "growth_pct": 2.0,
+   "accel": 0.539,
    "breadth": 0.5,
    "rising_sources": [
     "wikipedia"
@@ -211,10 +240,10 @@
   },
   {
    "ip_id": "kpop-demon-hunters",
-   "momentum": 86,
+   "momentum": 84,
    "stage": "mature",
-   "growth_pct": 15.9,
-   "accel": 0.242,
+   "growth_pct": 17.2,
+   "accel": 0.277,
    "breadth": 0.5,
    "rising_sources": [
     "trends"
@@ -240,10 +269,10 @@
   },
   {
    "ip_id": "hello-kitty",
-   "momentum": 84,
+   "momentum": 82,
    "stage": "mature",
-   "growth_pct": 9.0,
-   "accel": 0.314,
+   "growth_pct": 7.9,
+   "accel": 0.303,
    "breadth": 0.5,
    "rising_sources": [
     "trends"
@@ -268,40 +297,11 @@
    ]
   },
   {
-   "ip_id": "stardew-valley",
-   "momentum": 82,
-   "stage": "mature",
-   "growth_pct": 8.9,
-   "accel": 0.216,
-   "breadth": 0.5,
-   "rising_sources": [
-    "wikipedia"
-   ],
-   "sources": [
-    "trends",
-    "wikipedia"
-   ],
-   "spark": [
-    8225.0,
-    8235.0,
-    7995.0,
-    8207.0,
-    7683.0,
-    7656.0,
-    7517.0,
-    7399.0,
-    7827.0,
-    9233.0,
-    8618.0,
-    8351.0
-   ]
-  },
-  {
    "ip_id": "poppy-playtime",
    "momentum": 80,
    "stage": "mature",
-   "growth_pct": 13.3,
-   "accel": 0.122,
+   "growth_pct": 14.5,
+   "accel": 0.132,
    "breadth": 0.5,
    "rising_sources": [
     "trends"
@@ -326,11 +326,40 @@
    ]
   },
   {
-   "ip_id": "moo-deng",
+   "ip_id": "stardew-valley",
    "momentum": 78,
+   "stage": "mature",
+   "growth_pct": 8.6,
+   "accel": 0.202,
+   "breadth": 0.5,
+   "rising_sources": [
+    "wikipedia"
+   ],
+   "sources": [
+    "trends",
+    "wikipedia"
+   ],
+   "spark": [
+    8225.0,
+    8235.0,
+    7995.0,
+    8207.0,
+    7683.0,
+    7656.0,
+    7517.0,
+    7399.0,
+    7827.0,
+    9233.0,
+    8618.0,
+    8351.0
+   ]
+  },
+  {
+   "ip_id": "moo-deng",
+   "momentum": 76,
    "stage": "steady",
-   "growth_pct": 10.0,
-   "accel": 0.125,
+   "growth_pct": 10.1,
+   "accel": 0.112,
    "breadth": 0.5,
    "rising_sources": [
     "trends"
@@ -356,10 +385,10 @@
   },
   {
    "ip_id": "lethal-company",
-   "momentum": 76,
+   "momentum": 74,
    "stage": "steady",
-   "growth_pct": 6.6,
-   "accel": 0.168,
+   "growth_pct": 5.7,
+   "accel": 0.152,
    "breadth": 0.5,
    "rising_sources": [
     "trends"
@@ -384,69 +413,11 @@
    ]
   },
   {
-   "ip_id": "chainsaw-man",
-   "momentum": 74,
-   "stage": "mature",
-   "growth_pct": 8.9,
-   "accel": 0.043,
-   "breadth": 0.5,
-   "rising_sources": [
-    "trends"
-   ],
-   "sources": [
-    "trends",
-    "wikipedia"
-   ],
-   "spark": [
-    12160.0,
-    12236.0,
-    11592.0,
-    11937.0,
-    12318.0,
-    12327.0,
-    12964.0,
-    12446.0,
-    12527.0,
-    12559.0,
-    13063.0,
-    11856.0
-   ]
-  },
-  {
-   "ip_id": "furby",
+   "ip_id": "kuromi",
    "momentum": 72,
    "stage": "steady",
-   "growth_pct": 6.9,
-   "accel": 0.064,
-   "breadth": 0.5,
-   "rising_sources": [
-    "trends"
-   ],
-   "sources": [
-    "trends",
-    "wikipedia"
-   ],
-   "spark": [
-    2288.0,
-    2270.0,
-    2352.0,
-    2486.0,
-    2392.0,
-    2453.0,
-    2307.0,
-    2293.0,
-    2358.0,
-    2588.0,
-    2311.0,
-    2321.0
-   ]
-  },
-  {
-   "ip_id": "kuromi",
-   "momentum": 70,
-   "stage": "steady",
-   "growth_pct": 3.6,
-   "accel": 0.093,
+   "growth_pct": 4.2,
+   "accel": 0.106,
    "breadth": 0.5,
    "rising_sources": [
     "trends"
@@ -471,11 +442,40 @@
    ]
   },
   {
+   "ip_id": "chainsaw-man",
+   "momentum": 70,
+   "stage": "mature",
+   "growth_pct": 7.1,
+   "accel": 0.019,
+   "breadth": 0.5,
+   "rising_sources": [
+    "trends"
+   ],
+   "sources": [
+    "trends",
+    "wikipedia"
+   ],
+   "spark": [
+    12160.0,
+    12236.0,
+    11592.0,
+    11937.0,
+    12318.0,
+    12327.0,
+    12964.0,
+    12446.0,
+    12527.0,
+    12559.0,
+    13063.0,
+    11856.0
+   ]
+  },
+  {
    "ip_id": "jellycat",
    "momentum": 68,
    "stage": "steady",
-   "growth_pct": 4.5,
-   "accel": 0.062,
+   "growth_pct": 2.8,
+   "accel": 0.049,
    "breadth": 0.5,
    "rising_sources": [
     "trends"
@@ -500,38 +500,11 @@
    ]
   },
   {
-   "ip_id": "labubu",
-   "momentum": 66,
-   "stage": "steady",
-   "growth_pct": 1.8,
-   "accel": 0.294,
-   "breadth": 0.0,
-   "rising_sources": [],
-   "sources": [
-    "trends",
-    "wikipedia"
-   ],
-   "spark": [
-    7221.0,
-    6651.0,
-    14962.0,
-    7098.0,
-    6806.0,
-    6881.0,
-    5867.0,
-    5858.0,
-    5627.0,
-    5568.0,
-    7210.0,
-    5868.0
-   ]
-  },
-  {
    "ip_id": "among-us",
-   "momentum": 64,
+   "momentum": 66,
    "stage": "mature",
-   "growth_pct": 8.3,
-   "accel": 0.154,
+   "growth_pct": 8.4,
+   "accel": 0.157,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -554,11 +527,38 @@
    ]
   },
   {
+   "ip_id": "labubu",
+   "momentum": 64,
+   "stage": "steady",
+   "growth_pct": 0.6,
+   "accel": 0.284,
+   "breadth": 0.0,
+   "rising_sources": [],
+   "sources": [
+    "trends",
+    "wikipedia"
+   ],
+   "spark": [
+    7221.0,
+    6651.0,
+    14962.0,
+    7098.0,
+    6806.0,
+    6881.0,
+    5867.0,
+    5858.0,
+    5627.0,
+    5568.0,
+    7210.0,
+    5868.0
+   ]
+  },
+  {
    "ip_id": "bluey",
    "momentum": 62,
    "stage": "mature",
-   "growth_pct": -0.7,
-   "accel": 0.167,
+   "growth_pct": 0.1,
+   "accel": 0.183,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -581,38 +581,11 @@
    ]
   },
   {
-   "ip_id": "cinnamoroll",
-   "momentum": 60,
-   "stage": "steady",
-   "growth_pct": -0.2,
-   "accel": 0.148,
-   "breadth": 0.0,
-   "rising_sources": [],
-   "sources": [
-    "trends",
-    "wikipedia"
-   ],
-   "spark": [
-    3314.0,
-    3943.0,
-    3768.0,
-    3668.0,
-    3483.0,
-    3611.0,
-    2950.0,
-    2953.0,
-    3016.0,
-    3270.0,
-    3519.0,
-    3235.0
-   ]
-  },
-  {
    "ip_id": "spy-family",
-   "momentum": 58,
+   "momentum": 60,
    "stage": "mature",
-   "growth_pct": 2.6,
-   "accel": 0.093,
+   "growth_pct": 3.4,
+   "accel": 0.108,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -635,11 +608,11 @@
    ]
   },
   {
-   "ip_id": "dandadan",
-   "momentum": 56,
-   "stage": "mature",
-   "growth_pct": 1.4,
-   "accel": 0.098,
+   "ip_id": "cinnamoroll",
+   "momentum": 58,
+   "stage": "steady",
+   "growth_pct": 0.6,
+   "accel": 0.154,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -647,26 +620,26 @@
     "wikipedia"
    ],
    "spark": [
-    7489.0,
-    7614.0,
-    7464.0,
-    7654.0,
-    7111.0,
-    6647.0,
-    7194.0,
-    6628.0,
-    6194.0,
-    6147.0,
-    7582.0,
-    6708.0
+    3314.0,
+    3943.0,
+    3768.0,
+    3668.0,
+    3483.0,
+    3611.0,
+    2950.0,
+    2953.0,
+    3016.0,
+    3270.0,
+    3519.0,
+    3235.0
    ]
   },
   {
    "ip_id": "my-little-pony",
-   "momentum": 54,
+   "momentum": 56,
    "stage": "steady",
-   "growth_pct": 2.7,
-   "accel": 0.071,
+   "growth_pct": 4.0,
+   "accel": 0.093,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -689,11 +662,11 @@
    ]
   },
   {
-   "ip_id": "animal-crossing",
-   "momentum": 52,
+   "ip_id": "furby",
+   "momentum": 54,
    "stage": "steady",
-   "growth_pct": -2.1,
-   "accel": 0.124,
+   "growth_pct": 4.7,
+   "accel": 0.043,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -701,80 +674,26 @@
     "wikipedia"
    ],
    "spark": [
-    4529.0,
-    5454.0,
-    5418.0,
-    6141.0,
-    5306.0,
-    4822.0,
-    4483.0,
-    4277.0,
-    4264.0,
-    4280.0,
-    4169.0,
-    4727.0
-   ]
-  },
-  {
-   "ip_id": "jujutsu-kaisen",
-   "momentum": 50,
-   "stage": "mature",
-   "growth_pct": 1.0,
-   "accel": 0.059,
-   "breadth": 0.0,
-   "rising_sources": [],
-   "sources": [
-    "trends",
-    "wikipedia"
-   ],
-   "spark": [
-    27550.0,
-    27186.0,
-    26852.0,
-    26516.0,
-    25372.0,
-    25510.0,
-    25728.0,
-    23575.0,
-    23562.0,
-    22643.0,
-    25179.0,
-    23032.0
-   ]
-  },
-  {
-   "ip_id": "digital-circus",
-   "momentum": 48,
-   "stage": "mature",
-   "growth_pct": -3.9,
-   "accel": 0.136,
-   "breadth": 0.0,
-   "rising_sources": [],
-   "sources": [
-    "trends",
-    "wikipedia"
-   ],
-   "spark": [
-    22248.0,
-    20742.0,
-    19945.0,
-    18426.0,
-    17706.0,
-    16380.0,
-    15170.0,
-    14787.0,
-    16164.0,
-    15631.0,
-    16140.0,
-    14145.0
+    2288.0,
+    2270.0,
+    2352.0,
+    2486.0,
+    2392.0,
+    2453.0,
+    2307.0,
+    2293.0,
+    2358.0,
+    2588.0,
+    2311.0,
+    2321.0
    ]
   },
   {
    "ip_id": "moomin",
-   "momentum": 46,
+   "momentum": 52,
    "stage": "mature",
-   "growth_pct": -4.0,
-   "accel": 0.108,
+   "growth_pct": -1.9,
+   "accel": 0.147,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -797,11 +716,11 @@
    ]
   },
   {
-   "ip_id": "care-bears",
-   "momentum": 44,
-   "stage": "steady",
-   "growth_pct": 2.5,
-   "accel": -0.021,
+   "ip_id": "digital-circus",
+   "momentum": 50,
+   "stage": "mature",
+   "growth_pct": -2.8,
+   "accel": 0.16,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -809,23 +728,130 @@
     "wikipedia"
    ],
    "spark": [
-    4282.0,
-    4079.0,
-    4068.0,
-    4410.0,
-    4157.0,
-    4101.0,
-    4137.0,
-    3657.0,
-    4020.0,
-    3763.0,
-    4416.0,
-    3398.0
+    22248.0,
+    20742.0,
+    19945.0,
+    18426.0,
+    17706.0,
+    16380.0,
+    15170.0,
+    14787.0,
+    16164.0,
+    15631.0,
+    16140.0,
+    14145.0
+   ]
+  },
+  {
+   "ip_id": "animal-crossing",
+   "momentum": 48,
+   "stage": "steady",
+   "growth_pct": -1.5,
+   "accel": 0.131,
+   "breadth": 0.0,
+   "rising_sources": [],
+   "sources": [
+    "trends",
+    "wikipedia"
+   ],
+   "spark": [
+    4529.0,
+    5454.0,
+    5418.0,
+    6141.0,
+    5306.0,
+    4822.0,
+    4483.0,
+    4277.0,
+    4264.0,
+    4280.0,
+    4169.0,
+    4727.0
+   ]
+  },
+  {
+   "ip_id": "dandadan",
+   "momentum": 46,
+   "stage": "mature",
+   "growth_pct": 0.7,
+   "accel": 0.09,
+   "breadth": 0.0,
+   "rising_sources": [],
+   "sources": [
+    "trends",
+    "wikipedia"
+   ],
+   "spark": [
+    7489.0,
+    7614.0,
+    7464.0,
+    7654.0,
+    7111.0,
+    6647.0,
+    7194.0,
+    6628.0,
+    6194.0,
+    6147.0,
+    7582.0,
+    6708.0
+   ]
+  },
+  {
+   "ip_id": "jujutsu-kaisen",
+   "momentum": 44,
+   "stage": "mature",
+   "growth_pct": 0.5,
+   "accel": 0.037,
+   "breadth": 0.0,
+   "rising_sources": [],
+   "sources": [
+    "trends",
+    "wikipedia"
+   ],
+   "spark": [
+    27550.0,
+    27186.0,
+    26852.0,
+    26516.0,
+    25372.0,
+    25510.0,
+    25728.0,
+    23575.0,
+    23562.0,
+    22643.0,
+    25179.0,
+    23032.0
+   ]
+  },
+  {
+   "ip_id": "garten-of-banban",
+   "momentum": 42,
+   "stage": "steady",
+   "growth_pct": -11.9,
+   "accel": 0.241,
+   "breadth": 0.0,
+   "rising_sources": [],
+   "sources": [
+    "trends"
+   ],
+   "spark": [
+    57.0,
+    45.0,
+    38.0,
+    38.0,
+    34.0,
+    32.0,
+    29.0,
+    27.0,
+    28.0,
+    29.0,
+    26.0,
+    24.0
    ]
   },
   {
    "ip_id": "totoro",
-   "momentum": 42,
+   "momentum": 40,
    "stage": "mature",
    "growth_pct": -1.6,
    "accel": 0.036,
@@ -851,37 +877,11 @@
    ]
   },
   {
-   "ip_id": "garten-of-banban",
-   "momentum": 40,
-   "stage": "steady",
-   "growth_pct": -12.1,
-   "accel": 0.233,
-   "breadth": 0.0,
-   "rising_sources": [],
-   "sources": [
-    "trends"
-   ],
-   "spark": [
-    55.0,
-    44.0,
-    38.0,
-    37.0,
-    32.0,
-    32.0,
-    29.0,
-    27.0,
-    28.0,
-    28.0,
-    25.0,
-    24.0
-   ]
-  },
-  {
    "ip_id": "frieren",
    "momentum": 38,
    "stage": "mature",
-   "growth_pct": -1.3,
-   "accel": 0.008,
+   "growth_pct": -0.9,
+   "accel": 0.016,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -907,8 +907,8 @@
    "ip_id": "sonny-angel",
    "momentum": 36,
    "stage": "steady",
-   "growth_pct": -2.9,
-   "accel": 0.036,
+   "growth_pct": -2.5,
+   "accel": 0.041,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -931,11 +931,38 @@
    ]
   },
   {
-   "ip_id": "hollow-knight",
+   "ip_id": "care-bears",
    "momentum": 34,
+   "stage": "steady",
+   "growth_pct": 1.1,
+   "accel": -0.036,
+   "breadth": 0.0,
+   "rising_sources": [],
+   "sources": [
+    "trends",
+    "wikipedia"
+   ],
+   "spark": [
+    4282.0,
+    4079.0,
+    4068.0,
+    4410.0,
+    4157.0,
+    4101.0,
+    4137.0,
+    3657.0,
+    4020.0,
+    3763.0,
+    4416.0,
+    3398.0
+   ]
+  },
+  {
+   "ip_id": "hollow-knight",
+   "momentum": 32,
    "stage": "mature",
-   "growth_pct": -1.7,
-   "accel": -0.043,
+   "growth_pct": -0.8,
+   "accel": -0.027,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -959,10 +986,10 @@
   },
   {
    "ip_id": "skibidi-toilet",
-   "momentum": 32,
+   "momentum": 30,
    "stage": "steady",
    "growth_pct": -5.2,
-   "accel": 0.008,
+   "accel": 0.019,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -986,10 +1013,10 @@
   },
   {
    "ip_id": "stitch",
-   "momentum": 30,
+   "momentum": 28,
    "stage": "mature",
    "growth_pct": -4.9,
-   "accel": -0.01,
+   "accel": -0.017,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1013,10 +1040,10 @@
   },
   {
    "ip_id": "murder-drones",
-   "momentum": 28,
+   "momentum": 26,
    "stage": "steady",
-   "growth_pct": -5.3,
-   "accel": -0.025,
+   "growth_pct": -4.9,
+   "accel": -0.02,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1039,38 +1066,11 @@
    ]
   },
   {
-   "ip_id": "sonic",
-   "momentum": 26,
-   "stage": "steady",
-   "growth_pct": -6.5,
-   "accel": -0.035,
-   "breadth": 0.0,
-   "rising_sources": [],
-   "sources": [
-    "trends",
-    "wikipedia"
-   ],
-   "spark": [
-    5742.0,
-    5648.0,
-    5860.0,
-    5328.0,
-    5317.0,
-    5736.0,
-    5229.0,
-    5083.0,
-    4788.0,
-    4842.0,
-    4747.0,
-    5640.0
-   ]
-  },
-  {
    "ip_id": "spongebob",
    "momentum": 24,
    "stage": "mature",
-   "growth_pct": -5.1,
-   "accel": -0.064,
+   "growth_pct": -4.6,
+   "accel": -0.052,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1093,11 +1093,11 @@
    ]
   },
   {
-   "ip_id": "kirby",
+   "ip_id": "sonic",
    "momentum": 22,
    "stage": "steady",
-   "growth_pct": -10.2,
-   "accel": 0.015,
+   "growth_pct": -6.6,
+   "accel": -0.03,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1105,26 +1105,26 @@
     "wikipedia"
    ],
    "spark": [
-    2933.0,
-    2829.0,
-    2995.0,
-    5169.0,
-    3882.0,
-    3302.0,
-    2974.0,
-    3068.0,
-    2943.0,
-    2800.0,
-    2605.0,
-    4363.0
+    5742.0,
+    5648.0,
+    5860.0,
+    5328.0,
+    5317.0,
+    5736.0,
+    5229.0,
+    5083.0,
+    4788.0,
+    4842.0,
+    4747.0,
+    5640.0
    ]
   },
   {
    "ip_id": "balatro",
    "momentum": 20,
    "stage": "steady",
-   "growth_pct": -8.0,
-   "accel": -0.088,
+   "growth_pct": -8.2,
+   "accel": -0.091,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1147,11 +1147,38 @@
    ]
   },
   {
-   "ip_id": "smiski",
+   "ip_id": "kirby",
    "momentum": 18,
    "stage": "steady",
-   "growth_pct": -14.0,
-   "accel": -0.11,
+   "growth_pct": -12.0,
+   "accel": -0.019,
+   "breadth": 0.0,
+   "rising_sources": [],
+   "sources": [
+    "trends",
+    "wikipedia"
+   ],
+   "spark": [
+    2933.0,
+    2829.0,
+    2995.0,
+    5169.0,
+    3882.0,
+    3302.0,
+    2974.0,
+    3068.0,
+    2943.0,
+    2800.0,
+    2605.0,
+    4363.0
+   ]
+  },
+  {
+   "ip_id": "smiski",
+   "momentum": 16,
+   "stage": "steady",
+   "growth_pct": -13.4,
+   "accel": -0.098,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1175,10 +1202,10 @@
   },
   {
    "ip_id": "tamagotchi",
-   "momentum": 16,
+   "momentum": 14,
    "stage": "steady",
-   "growth_pct": -10.2,
-   "accel": -0.195,
+   "growth_pct": -10.0,
+   "accel": -0.183,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1202,10 +1229,10 @@
   },
   {
    "ip_id": "minecraft",
-   "momentum": 14,
+   "momentum": 12,
    "stage": "mature",
-   "growth_pct": -8.9,
-   "accel": -0.252,
+   "growth_pct": -8.5,
+   "accel": -0.239,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1229,10 +1256,10 @@
   },
   {
    "ip_id": "pusheen",
-   "momentum": 12,
+   "momentum": 10,
    "stage": "steady",
-   "growth_pct": -13.4,
-   "accel": -0.214,
+   "growth_pct": -12.4,
+   "accel": -0.198,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1256,10 +1283,10 @@
   },
   {
    "ip_id": "chiikawa",
-   "momentum": 10,
+   "momentum": 8,
    "stage": "declining",
-   "growth_pct": -20.8,
-   "accel": -0.265,
+   "growth_pct": -20.7,
+   "accel": -0.264,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1283,9 +1310,9 @@
   },
   {
    "ip_id": "squishmallows",
-   "momentum": 8,
+   "momentum": 6,
    "stage": "declining",
-   "growth_pct": -19.5,
+   "growth_pct": -19.7,
    "accel": -0.332,
    "breadth": 0.0,
    "rising_sources": [],
@@ -1310,10 +1337,10 @@
   },
   {
    "ip_id": "snoopy",
-   "momentum": 6,
+   "momentum": 4,
    "stage": "mature",
-   "growth_pct": -14.6,
-   "accel": -0.441,
+   "growth_pct": -14.4,
+   "accel": -0.453,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1336,38 +1363,11 @@
    ]
   },
   {
-   "ip_id": "grogu",
-   "momentum": 4,
-   "stage": "declining",
-   "growth_pct": -34.4,
-   "accel": -0.031,
-   "breadth": 0.0,
-   "rising_sources": [],
-   "sources": [
-    "trends",
-    "wikipedia"
-   ],
-   "spark": [
-    8889.0,
-    8299.0,
-    19460.0,
-    16477.0,
-    11528.0,
-    12687.0,
-    12262.0,
-    15167.0,
-    8376.0,
-    7114.0,
-    8632.0,
-    5488.0
-   ]
-  },
-  {
    "ip_id": "gabbys-dollhouse",
    "momentum": 2,
    "stage": "declining",
-   "growth_pct": -21.1,
-   "accel": -0.525,
+   "growth_pct": -20.8,
+   "accel": -0.518,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1390,11 +1390,11 @@
    ]
   },
   {
-   "ip_id": "pesto-penguin",
+   "ip_id": "grogu",
    "momentum": 0,
    "stage": "declining",
-   "growth_pct": -40.5,
-   "accel": -2.003,
+   "growth_pct": -37.6,
+   "accel": -0.12,
    "breadth": 0.0,
    "rising_sources": [],
    "sources": [
@@ -1402,18 +1402,18 @@
     "wikipedia"
    ],
    "spark": [
-    555.0,
-    602.0,
-    595.0,
-    586.0,
-    570.0,
-    625.0,
-    577.0,
-    651.0,
-    616.0,
-    546.0,
-    531.0,
-    602.0
+    8889.0,
+    8299.0,
+    19460.0,
+    16477.0,
+    11528.0,
+    12687.0,
+    12262.0,
+    15167.0,
+    8376.0,
+    7114.0,
+    8632.0,
+    5488.0
    ]
   }
  ]
